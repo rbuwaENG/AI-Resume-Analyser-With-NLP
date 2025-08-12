@@ -93,30 +93,4 @@ Data Scientist Enthusiast | Petroleum Engineer Graduate | Solving Problems Using
 
 ## Tech Stack
 
-
-
-
-
-![Logo](https://businesstoys.in/assets/programs/full-stack-data-science-professional-program/tools.png)
-## Other Me
-👩‍💻 I’m interested in Petroleum Engineering
-
-🧠 I’m currently learning Data Scientist | Data Analytics | Business Analytics
-
-👯‍♀️ I’m looking to collaborate on Ideas & Data
-
-
-
-
-## 🛠 Skills
-1. Data Scientist
-2. Data Analyst
-3. Business Analyst
-4. Machine Learning 
-
-
-## Future Plans 
-
-⚡️ Looking forward to help drive innovations into your company as a Data Scientist
-
-⚡️ Looking forward to offer more than I take and leave the place better than i found
+   
