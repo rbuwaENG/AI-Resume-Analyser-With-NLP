@@ -196,7 +196,7 @@ def run():
     st.sidebar.markdown("# Choose User")
     activities = ["User", "Admin"]
     choice = st.sidebar.selectbox("Choose among the given options:", activities)
-    link = '[©Developed by Akash Kumar Jha](https://www.linkedin.com/in/akashkumar107)'
+    link = '[©Developed by Ravindu Buwaneka](https://www.linkedin.com/in/ravindu-buwaneka-42913a1a3)'
     st.sidebar.markdown(link, unsafe_allow_html=True)
 
 
@@ -406,7 +406,7 @@ def run():
         ad_password = st.text_input("Password", type='password')
         if st.button('Login'):
             if ad_user == 'briit' and ad_password == 'briit123':
-                st.success("Welcome Akash Kumar Hha !")
+                st.success("Welcome Ravindu Buwaneka !")
                 # Display Data
                 data = pd.read_sql('SELECT * FROM user_data', connection)
                 st.header("**User's Data**")
