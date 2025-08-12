@@ -79,18 +79,5 @@ To run tests, run the following command
   python app.py
 ```
 
-## 🚀 About Me
-
-Data Scientist Enthusiast | Petroleum Engineer Graduate | Solving Problems Using Data 
-
-
-# Hi, I'm Akash! 👋
-
-
-## 🔗 Links
-[![github](https://img.shields.io/badge/github-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://github.com/Akash1070)
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/akashkumar107/)
-
-## Tech Stack
 
    
