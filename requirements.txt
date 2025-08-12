@@ -7,3 +7,4 @@ nltk
 pdfminer.six
 PyPDF2
 requests
+streamlit-pdf-viewer
