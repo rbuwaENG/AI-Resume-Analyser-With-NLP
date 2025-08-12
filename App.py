@@ -36,6 +36,7 @@ import pymysql
 from Courses import ds_course,web_course,android_course,ios_course,uiux_course,resume_videos,interview_videos
 import plotly.express as px #to create visualisations at the admin session
 import os
+import sqlite3
 
 # Configure pafy to use internal backend to avoid youtube-dl dependency
 if os.environ.get("PAFY_BACKEND") is None:
@@ -139,19 +140,85 @@ def course_recommender(course_list):
             break
     return rec_course
 
+"""Database initialization: try MySQL first, else fall back to SQLite."""
+connection = None
+is_mysql = False
 
+def init_db():
+    global connection, is_mysql
+    db_name = os.getenv('DB_NAME', 'cv')
+    host = os.getenv('DB_HOST', '127.0.0.1')
+    port = int(os.getenv('DB_PORT', '3306'))
+    user = os.getenv('DB_USER', 'root')
+    password = os.getenv('DB_PASSWORD', '')
+    try:
+        server_conn = pymysql.connect(host=host, port=port, user=user, password=password, autocommit=True)
+        with server_conn.cursor() as cur:
+            cur.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}`")
+        server_conn.close()
+        connection = pymysql.connect(host=host, port=port, user=user, password=password, db=db_name)
+        is_mysql = True
+    except Exception:
+        db_path = os.path.join(os.path.dirname(__file__), f"{db_name}.sqlite3")
+        connection = sqlite3.connect(db_path, check_same_thread=False)
+        is_mysql = False
 
-
-#CONNECT TO DATABASE
-
-connection = pymysql.connect(host='localhost',user='root',password='Akash@8093',db='cv')
-cursor = connection.cursor()
+def create_tables():
+    global connection, is_mysql
+    cursor = connection.cursor()
+    if is_mysql:
+        table_sql = (
+            """
+            CREATE TABLE IF NOT EXISTS user_data (
+                ID INT NOT NULL AUTO_INCREMENT,
+                Name VARCHAR(500) NOT NULL,
+                Email_ID VARCHAR(500) NOT NULL,
+                resume_score VARCHAR(8) NOT NULL,
+                Timestamp VARCHAR(50) NOT NULL,
+                Page_no VARCHAR(5) NOT NULL,
+                Predicted_Field TEXT NOT NULL,
+                User_level TEXT NOT NULL,
+                Actual_skills TEXT NOT NULL,
+                Recommended_skills TEXT NOT NULL,
+                Recommended_courses TEXT NOT NULL,
+                PRIMARY KEY (ID)
+            );
+            """
+        )
+    else:
+        table_sql = (
+            """
+            CREATE TABLE IF NOT EXISTS user_data (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                Name TEXT NOT NULL,
+                Email_ID TEXT NOT NULL,
+                resume_score TEXT NOT NULL,
+                Timestamp TEXT NOT NULL,
+                Page_no TEXT NOT NULL,
+                Predicted_Field TEXT NOT NULL,
+                User_level TEXT NOT NULL,
+                Actual_skills TEXT NOT NULL,
+                Recommended_skills TEXT NOT NULL,
+                Recommended_courses TEXT NOT NULL
+            );
+            """
+        )
+    cursor.execute(table_sql)
+    connection.commit()
 
 def insert_data(name,email,res_score,timestamp,no_of_pages,reco_field,cand_level,skills,recommended_skills,courses):
-    DB_table_name = 'user_data'
-    insert_sql = "insert into " + DB_table_name + """
-    values (0,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-    rec_values = (name, email, str(res_score), timestamp,str(no_of_pages), reco_field, cand_level, skills,recommended_skills,courses)
+    cursor = connection.cursor()
+    if is_mysql:
+        insert_sql = (
+            "INSERT INTO user_data (Name, Email_ID, resume_score, Timestamp, Page_no, Predicted_Field, User_level, Actual_skills, Recommended_skills, Recommended_courses) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        )
+    else:
+        insert_sql = (
+            "INSERT INTO user_data (Name, Email_ID, resume_score, Timestamp, Page_no, Predicted_Field, User_level, Actual_skills, Recommended_skills, Recommended_courses) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)"
+        )
+    rec_values = (name, email, str(res_score), timestamp, str(no_of_pages), reco_field, cand_level, skills, recommended_skills, courses)
     cursor.execute(insert_sql, rec_values)
     connection.commit()
 
@@ -171,27 +238,10 @@ def run():
     st.sidebar.markdown(link, unsafe_allow_html=True)
 
 
-    # Create the DB
-    db_sql = """CREATE DATABASE IF NOT EXISTS CV;"""
-    cursor.execute(db_sql)
+    # Initialize DB and ensure tables
+    init_db()
+    create_tables()
 
-    # Create table
-    DB_table_name = 'user_data'
-    table_sql = "CREATE TABLE IF NOT EXISTS " + DB_table_name + """
-                    (ID INT NOT NULL AUTO_INCREMENT,
-                     Name varchar(500) NOT NULL,
-                     Email_ID VARCHAR(500) NOT NULL,
-                     resume_score VARCHAR(8) NOT NULL,
-                     Timestamp VARCHAR(50) NOT NULL,
-                     Page_no VARCHAR(5) NOT NULL,
-                     Predicted_Field BLOB NOT NULL,
-                     User_level BLOB NOT NULL,
-                     Actual_skills BLOB NOT NULL,
-                     Recommended_skills BLOB NOT NULL,
-                     Recommended_courses BLOB NOT NULL,
-                     PRIMARY KEY (ID));
-                    """
-    cursor.execute(table_sql)
     if choice == 'User':
         st.markdown('''<h5 style='text-align: left; color: #021659;'> Upload your resume, and get smart recommendations</h5>''',
                     unsafe_allow_html=True)
@@ -396,30 +446,25 @@ def run():
             if ad_user == 'briit' and ad_password == 'briit123':
                 st.success("Welcome Akash Kumar Hha !")
                 # Display Data
-                cursor.execute('''SELECT*FROM user_data''')
-                data = cursor.fetchall()
+                data = pd.read_sql('SELECT * FROM user_data', connection)
                 st.header("**User's Data**")
-                df = pd.DataFrame(data, columns=['ID', 'Name', 'Email', 'Resume Score', 'Timestamp', 'Total Page',
-                                                 'Predicted Field', 'User Level', 'Actual Skills', 'Recommended Skills',
-                                                 'Recommended Course'])
-                st.dataframe(df)
-                st.markdown(get_table_download_link(df,'User_Data.csv','Download Report'), unsafe_allow_html=True)
+                st.dataframe(data)
+                st.markdown(get_table_download_link(data,'User_Data.csv','Download Report'), unsafe_allow_html=True)
                 # Admin Side Data
-                query = 'select * from user_data;'
-                plot_data = pd.read_sql(query, connection)
+                plot_data = data
 
                 # Pie chart for predicted field recommendations
                 labels = plot_data.Predicted_Field.unique()
                 values = plot_data.Predicted_Field.value_counts()
                 st.subheader("**Pie-Chart for Predicted Field Recommendation**")
-                fig = px.pie(df, values=values, names=labels, title='Predicted Field according to the Skills')
+                fig = px.pie(plot_data, values=values, names=labels, title='Predicted Field according to the Skills')
                 st.plotly_chart(fig)
 
                 # Pie chart for User's👨‍💻 Experienced Level
                 labels = plot_data.User_level.unique()
                 values = plot_data.User_level.value_counts()
                 st.subheader("**Pie-Chart for User's Experienced Level**")
-                fig = px.pie(df, values=values, names=labels, title="Pie-Chart📈 for User's👨‍💻 Experienced Level")
+                fig = px.pie(plot_data, values=values, names=labels, title="Pie-Chart📈 for User's👨‍💻 Experienced Level")
                 st.plotly_chart(fig)
 
 
