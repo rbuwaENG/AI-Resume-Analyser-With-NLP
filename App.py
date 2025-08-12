@@ -33,6 +33,7 @@ from PyPDF2 import PdfReader
 from streamlit_tags import st_tags
 from PIL import Image
 from Courses import ds_course,web_course,android_course,ios_course,uiux_course,resume_videos,interview_videos
+from dynamic_courses import get_dynamic_courses
 import plotly.express as px #to create visualisations at the admin session
 import os
 import sqlite3
@@ -271,7 +272,7 @@ def run():
                         recommended_keywords = st_tags(label='### Recommended skills for you.',
                         text='Recommended skills generated from System',value=recommended_skills,key = '2')
                         st.markdown('''<h4 style='text-align: left; color: #1ed760;'>Adding this skills to resume will boost🚀 the chances of getting a Job</h4>''',unsafe_allow_html=True)
-                        rec_course = course_recommender(ds_course)
+                        rec_course = course_recommender(get_dynamic_courses('ds', limit=10) or ds_course)
                         break
 
                     elif i.lower() in web_keyword:
@@ -281,7 +282,7 @@ def run():
                         recommended_keywords = st_tags(label='### Recommended skills for you.',
                         text='Recommended skills generated from System',value=recommended_skills,key = '3')
                         st.markdown('''<h4 style='text-align: left; color: #1ed760;'>Adding this skills to resume will boost🚀 the chances of getting a Job💼</h4>''',unsafe_allow_html=True)
-                        rec_course = course_recommender(web_course)
+                        rec_course = course_recommender(get_dynamic_courses('web', limit=10) or web_course)
                         break
 
                     elif i.lower() in android_keyword:
@@ -291,7 +292,7 @@ def run():
                         recommended_keywords = st_tags(label='### Recommended skills for you.',
                         text='Recommended skills generated from System',value=recommended_skills,key = '4')
                         st.markdown('''<h4 style='text-align: left; color: #1ed760;'>Adding this skills to resume will boost🚀 the chances of getting a Job💼</h4>''',unsafe_allow_html=True)
-                        rec_course = course_recommender(android_course)
+                        rec_course = course_recommender(get_dynamic_courses('android', limit=10) or android_course)
                         break
 
                     elif i.lower() in ios_keyword:
@@ -301,7 +302,7 @@ def run():
                         recommended_keywords = st_tags(label='### Recommended skills for you.',
                         text='Recommended skills generated from System',value=recommended_skills,key = '5')
                         st.markdown('''<h4 style='text-align: left; color: #1ed760;'>Adding this skills to resume will boost🚀 the chances of getting a Job💼</h4>''',unsafe_allow_html=True)
-                        rec_course = course_recommender(ios_course)
+                        rec_course = course_recommender(get_dynamic_courses('ios', limit=10) or ios_course)
                         break
 
                     elif i.lower() in uiux_keyword:
@@ -311,7 +312,7 @@ def run():
                         recommended_keywords = st_tags(label='### Recommended skills for you.',
                         text='Recommended skills generated from System',value=recommended_skills,key = '6')
                         st.markdown('''<h4 style='text-align: left; color: #1ed760;'>Adding this skills to resume will boost🚀 the chances of getting a Job💼</h4>''',unsafe_allow_html=True)
-                        rec_course = course_recommender(uiux_course)
+                        rec_course = course_recommender(get_dynamic_courses('uiux', limit=10) or uiux_course)
                         break
 
                 # Insert into table
