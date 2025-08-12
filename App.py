@@ -47,6 +47,12 @@ if os.environ.get("PAFY_BACKEND") is None:
 import pafy #for uploading youtube videos
 
 import nltk
+import sys
+if sys.version_info >= (3, 11):
+    raise RuntimeError(
+        "This app depends on pyresparser/spaCy 2.x which are not compatible with Python 3.11+. "
+        "Please run with Python 3.8-3.10. For example, create a venv with Python 3.9."
+    )
 
 # Ensure required NLTK data is available before importing pyresparser
 nltk_data_dir = os.path.join(os.path.dirname(__file__), "nltk_data")
