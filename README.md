@@ -7,11 +7,6 @@
 ## Preview
 ![Click HERE To View](https://github.com/Akash1070/AI-Resume-Analyser-With-NLP/blob/main/Screenshot.png)
 
-## Authors
-
-- [@Akash Kumar Jha](https://github.com/Akash1070)
-
-
 ## Deployment
  
     1. Model Building and Tuning
