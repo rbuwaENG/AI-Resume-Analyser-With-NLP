@@ -28,7 +28,6 @@ import pandas as pd
 import base64,random
 import time,datetime
 #libraries to parse the resume pdf files
-from pyresparser import ResumeParser
 from pdfminer3.layout import LAParams, LTTextBox
 from pdfminer3.pdfpage import PDFPage
 from pdfminer3.pdfinterp import PDFResourceManager
@@ -41,8 +40,19 @@ import pymysql
 from Courses import ds_course,web_course,android_course,ios_course,uiux_course,resume_videos,interview_videos
 import pafy #for uploading youtube videos
 import plotly.express as px #to create visualisations at the admin session
+import os
 import nltk
-nltk.download('stopwords')
+
+# Ensure required NLTK data is available before importing pyresparser
+nltk_data_dir = os.path.join(os.path.dirname(__file__), "nltk_data")
+if nltk_data_dir not in nltk.data.path:
+    nltk.data.path.append(nltk_data_dir)
+try:
+    nltk.data.find("corpora/stopwords")
+except LookupError:
+    nltk.download("stopwords", download_dir=nltk_data_dir, quiet=True)
+
+from pyresparser import ResumeParser
 
 
 def fetch_yt_video(link):
