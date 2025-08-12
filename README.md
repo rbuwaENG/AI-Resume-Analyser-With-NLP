@@ -1,78 +1,66 @@
-# **AI Resume Analyser With NLP on Streamlit**
+# AI Resume Analyzer (Streamlit)
 
-![Python 3.6](https://img.shields.io/badge/Python-3.6-brightgreen.svg)
+Analyze resumes, extract key info, and recommend skills/courses — now Python 3.11 compatible, SQLite-backed, and open source.
 
-• Please do ⭐ the repository, if it helped you in anyway.
+![Screenshot](./Screenshot.png)
 
-## Preview
-![Click HERE To View](https://github.com/Akash1070/AI-Resume-Analyser-With-NLP/blob/main/Screenshot.png)
+### Features
+- Upload a PDF resume and extract: name, email, phone, skills
+- Skill-based recommendations with dynamic course lists fetched from public YouTube RSS feeds (no AI APIs)
+- Local SQLite storage for user submissions
+- Admin dashboard (view/export data, simple charts)
+- Open source; contributions welcome
 
-## Deployment
- 
-    1. Model Building and Tuning
-    2. Building Flask API
-   
-## Installation
+### Admin login
+- Username: `briit`
+- Password: `briit123`
 
-To install the libraries used in this project. Follow the 
-below steps:
-
-```bash
-
-#SET UP:
-
-# 1. INSTALL BELOW LIBRARIES
-
-        #pip install -r requirements.txt
-
-        # pip install nltk
-
-        # pip install spacy==2.3.5
-
-        # pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
-
-        # pip install pyresparser
-
-# 2. CREAT A FOLDER AND NAME IT (e.g. resume)
-
-        #2.1 create two more folders inside this folder (Logo and Uploaded_Resumes)
-        #2.2 create two python files (App.py and Courses.py)
-
-# 3. START YOUR SQL DATABASE
-
-
-# 4. CONTINUE WITH THE FOLLOWING CODE...
-
-import streamlit as st
-import pandas as pd
-import base64,random
-import time,datetime
-#libraries to parse the resume pdf files
-from pyresparser import ResumeParser
-from pdfminer3.layout import LAParams, LTTextBox
-from pdfminer3.pdfpage import PDFPage
-from pdfminer3.pdfinterp import PDFResourceManager
-from pdfminer3.pdfinterp import PDFPageInterpreter
-from pdfminer3.converter import TextConverter
-import io,random
-from streamlit_tags import st_tags
-from PIL import Image
-import pymysql
-from Courses import ds_course,web_course,android_course,ios_course,uiux_course,resume_videos,interview_videos
-import pafy #for uploading youtube videos
-import plotly.express as px #to create visualisations at the admin session
-import nltk
-nltk.download('stopwords')
-
-```
-    
-## Running Flask Api
-
-To run tests, run the following command
+## Quick start
+Requirements: Python 3.11+
 
 ```bash
-  python app.py
+# Clone
+git clone https://github.com/rbuwaENG/AI-Resume-Analyser-With-NLP.git
+cd AI-Resume-Analyser-With-NLP
+
+# Install
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Optional: show a repo link in the sidebar
+export REPO_URL="https://github.com/rbuwaENG/AI-Resume-Analyser-With-NLP"
+
+# Run
+streamlit run App.py
 ```
 
+## Configuration
+- `REPO_URL`: if set, a link to the repository appears in the sidebar under “Open Source”.
+- Database: SQLite database file `cv.sqlite3` is created alongside `App.py` automatically.
 
-   
+## How recommendations work
+- The app detects skills found in the resume text via keyword matching.
+- For each skill domain (Data Science, Web, Android, iOS, UI/UX), it fetches recent videos from curated YouTube channels via RSS and filters them by relevant keywords.
+- Results are cached for 7 days and fall back to the static lists in `Courses.py` if fetching fails.
+
+## Project structure
+- `App.py`: Streamlit app
+- `Courses.py`: Static fallback course lists and video links
+- `dynamic_courses.py`: Fetches and caches modern course links via YouTube RSS
+- `Uploaded_Resumes/`: Uploaded files
+- `Logo/`: Branding assets
+
+## Contributing
+Contributions are welcome! Please:
+- Read [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+- Follow the [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)
+- Open an issue before large refactors
+
+## Security
+Please report vulnerabilities responsibly. See [`SECURITY.md`](./SECURITY.md).
+
+## License
+This project is licensed under the MIT License — see [`LICENSE`](./LICENSE).
+
+## Credits
+Developed by [Ravindu Buwaneka](https://www.linkedin.com/in/ravindu-buwaneka-42913a1a3). Originally inspired by community resume parsing projects.
