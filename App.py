@@ -38,9 +38,7 @@ import os
 import sqlite3
 
 # Configure pafy to use internal backend to avoid youtube-dl dependency
-if os.environ.get("PAFY_BACKEND") is None:
-    os.environ["PAFY_BACKEND"] = "internal"
-import pafy #for uploading youtube videos
+import requests
 
 import re
 
@@ -51,8 +49,13 @@ st.set_page_config(
 
 
 def fetch_yt_video(link):
-    video = pafy.new(link)
-    return video.title
+    try:
+        resp = requests.get("https://www.youtube.com/oembed", params={"url": link, "format": "json"}, timeout=5)
+        if resp.ok:
+            return resp.json().get("title", "YouTube Video")
+    except Exception:
+        pass
+    return "YouTube Video"
 
 def get_table_download_link(df,filename,text):
     """Generates a link allowing the data in a given panda dataframe to be downloaded
