@@ -130,9 +130,16 @@ def extract_skills(text):
 
 def show_pdf(file_path):
     with open(file_path, "rb") as f:
-        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
-    st.markdown(pdf_display, unsafe_allow_html=True)
+        pdf_bytes = f.read()
+    try:
+        from streamlit_pdf_viewer import pdf_viewer
+        pdf_viewer(input=pdf_bytes, width=700, height=1000)
+    except Exception:
+        b64 = base64.b64encode(pdf_bytes).decode('utf-8')
+        st.markdown(
+            f'<a href="data:application/pdf;base64,{b64}" target="_blank">Open PDF in new tab</a>',
+            unsafe_allow_html=True,
+        )
 
 def course_recommender(course_list):
     st.subheader("**Courses & Certificates Recommendations 🎓**")
