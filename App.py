@@ -200,6 +200,12 @@ def run():
     link = '[©Developed by Ravindu Buwaneka](https://www.linkedin.com/in/ravindu-buwaneka-42913a1a3)'
     st.sidebar.markdown(link, unsafe_allow_html=True)
 
+    # Open Source project note and optional repo link
+    st.sidebar.markdown("### Open Source")
+    st.sidebar.info("This is an open-source project. Contributions are welcome.")
+    repo_url = os.getenv('REPO_URL')
+    if repo_url:
+        st.sidebar.markdown(f"[Project Repository]({repo_url})")
 
     # Initialize DB and ensure tables (SQLite)
     init_db()
