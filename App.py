@@ -203,9 +203,8 @@ def run():
     # Open Source project note and optional repo link
     st.sidebar.markdown("### Open Source")
     st.sidebar.info("This is an open-source project. Contributions are welcome.")
-    repo_url = os.getenv('REPO_URL')
-    if repo_url:
-        st.sidebar.markdown(f"[Project Repository]({repo_url})")
+    repo_url = os.getenv('REPO_URL', 'https://github.com/rbuwaENG/AI-Resume-Analyser-With-NLP')
+    st.sidebar.markdown(f"[Project Repository]({repo_url})")
 
     # Initialize DB and ensure tables (SQLite)
     init_db()
